@@ -3,13 +3,25 @@ package routes
 import (
 	"log"
 
+	controllers "github.com/CAVAh/api-tech-challenge/src/adapters/controllers/customer"
+	usecases "github.com/CAVAh/api-tech-challenge/src/core/domain/usecases/customer"
+	"github.com/CAVAh/api-tech-challenge/src/infra/db/repositories"
 	"github.com/gin-gonic/gin"
 )
 
 func HandleRequests() {
 	router := gin.Default()
+	customerRepository := &repositories.CustomerRepository{}
+	listUsecase := &usecases.ListCustomerUsecase{CustomerRepository: customerRepository}
+	createUsecase := &usecases.CreateCustomerUsecase{CustomerRepository: customerRepository}
 
-	SetupCustomerRoutes(router)
+	router.GET("/customers", func(c *gin.Context) {
+		controllers.ListCustomers(c, listUsecase)
+	})
+
+	router.POST("/customers", func(c *gin.Context) {
+		controllers.CreateCustomer(c, createUsecase)
+	})
 
 	err := router.Run()
 

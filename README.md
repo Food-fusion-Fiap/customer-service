@@ -60,6 +60,36 @@ Para realizar testes de estresse, certifique-se de ter o K6 instalado na sua má
 k6 run --duration 1m tests/stress.js
 ```
 
+## Testes unitários
+
+Para realizar testes unitários, execute o seguinte comando:
+
+```bash
+go test ./...
+```
+
+## Testes com cobertura
+
+Para realizar testes com cobertura, execute o seguinte comando:
+
+```bash
+go test -cover ./...
+```
+
+Caso desejar visualizar o relatório de cobertura em HTML, execute o seguinte comando:
+
+```bash
+go test -coverprofile=coverage.out ./...
+grep -v "routes.go" coverage.out | grep -v "gorm.go" | grep -v "main.go" | grep -v "customer_model.go" > filtered_coverage.out
+go tool cover -html=filtered_coverage.out -o coverage.html
+```
+
+Para descobrir o percentual de cobertura, execute o seguinte comando:
+
+```bash
+go tool cover -func=filtered_coverage.out | grep total | awk '{print $3}'
+```
+
 ## Documentação da API
 Ao importar a documentação presente em `docs/tech-challenge.json` no Postman, terão valores de exemplos editáveis.
 

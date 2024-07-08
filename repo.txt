@@ -1,0 +1,82 @@
+package repositories
+
+import (
+	"errors"
+	"testing"
+
+	"github.com/CAVAh/api-tech-challenge/src/core/domain/entities"
+	db "github.com/CAVAh/api-tech-challenge/src/infra/db/gorm"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"gorm.io/gorm"
+)
+
+// Mock do DB GORM para simular operações de banco de dados
+type MockDB struct {
+	mock.Mock
+}
+
+func (m *MockDB) Create(value interface{}) *gorm.DB {
+	args := m.Called(value)
+	return args.Get(0).(*gorm.DB)
+}
+
+func (m *MockDB) Where(query interface{}, args ...interface{}) *gorm.DB {
+	arg := m.Called(query)
+	return arg.Get(0).(*gorm.DB)
+}
+
+func (m *MockDB) Find(dest interface{}, conds ...interface{}) *gorm.DB {
+	args := m.Called(dest)
+	return args.Get(0).(*gorm.DB)
+}
+
+func TestCreateCustomer(t *testing.T) {
+	// Configurar o mock do banco de dados GORM
+	mockDB := new(MockDB)
+
+	// Criar o mock do repositório de clientes
+	repo := CustomerRepository{DB: mockDB}
+
+	// Mock de entidade de cliente para teste
+	entity := &entities.Customer{
+		Name:  "Test Customer",
+		CPF:   "12345678900",
+		Email: "test@email.com",
+	}
+
+	// Simular criação bem-sucedida
+	mockDB.On("Create", mock.Anything).Return(&gorm.DB{Error: nil})
+
+	// Substituir o DB real pelo mock no repositório
+	db.DB = mockDB
+
+	// Executar o método Create
+	result, err := repo.Create(entity)
+
+	// Verificar o resultado
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	// Simular erro de chave duplicada
+	mockDB.On("Create", mock.Anything).Return(&gorm.DB{Error: errors.New("duplicate key value violates unique constraint")})
+
+	// Executar o método Create novamente para simular o erro
+	result, err = repo.Create(entity)
+
+	// Verificar o erro esperado
+	assert.Error(t, err)
+	assert.EqualError(t, err, "cliente já existe no sistema")
+	assert.Nil(t, result)
+
+	// Simular erro desconhecido
+	mockDB.On("Create", mock.Anything).Return(&gorm.DB{Error: errors.New("unexpected error")})
+
+	// Executar o método Create para simular o erro desconhecido
+	result, err = repo.Create(entity)
+
+	// Verificar o erro esperado
+	assert.Error(t, err)
+	assert.EqualError(t, err, "ocorreu um erro desconhecido ao criar o cliente")
+	assert.Nil(t, result)
+}
