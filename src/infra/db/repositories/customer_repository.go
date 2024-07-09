@@ -2,13 +2,15 @@ package repositories
 
 import (
 	"errors"
-	"github.com/CAVAh/api-tech-challenge/src/core/domain/entities"
-	"github.com/CAVAh/api-tech-challenge/src/infra/db/gorm"
-	"github.com/CAVAh/api-tech-challenge/src/infra/db/models"
 	"strings"
+
+	"github.com/CAVAh/api-tech-challenge/src/core/domain/entities"
+	"github.com/CAVAh/api-tech-challenge/src/infra/db/database"
+	"github.com/CAVAh/api-tech-challenge/src/infra/db/models"
 )
 
 type CustomerRepository struct {
+	DB database.Database
 }
 
 func (r CustomerRepository) Create(entity *entities.Customer) (*entities.Customer, error) {
@@ -18,7 +20,7 @@ func (r CustomerRepository) Create(entity *entities.Customer) (*entities.Custome
 		Email: entity.Email,
 	}
 
-	if err := gorm.DB.Create(&customer).Error; err != nil {
+	if err := r.DB.Create(&customer); err != nil {
 		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
 			return nil, errors.New("cliente já existe no sistema")
 		} else {
@@ -35,9 +37,13 @@ func (r CustomerRepository) List(entity *entities.Customer) ([]entities.Customer
 	var customers []models.Customer
 
 	if cpf := entity.CPF; cpf != "" {
-		gorm.DB.Where("cpf = ?", cpf).Find(&customers)
+		if err := r.DB.Where("cpf = ?", cpf).Find(&customers).Error; err != nil {
+			return nil, err
+		}
 	} else {
-		gorm.DB.Find(&customers)
+		if err := r.DB.Find(&customers).Error; err != nil {
+			return nil, err
+		}
 	}
 
 	var response []entities.Customer
@@ -49,14 +55,18 @@ func (r CustomerRepository) List(entity *entities.Customer) ([]entities.Customer
 	return response, nil
 }
 
-func (r CustomerRepository) FindFirstById(id uint) (*entities.Customer, error) {
+func (r CustomerRepository) FindFirstByCpf(entity *entities.Customer) (*entities.Customer, error) {
 	var customers []models.Customer
-	gorm.DB.Where("id = ?", id).Find(&customers)
+
+	cpf := entity.CPF
+	if err := r.DB.Where("cpf = ?", cpf).Find(&customers).Error; err != nil {
+		return nil, err
+	}
 
 	if len(customers) == 0 {
 		return nil, nil
 	} else {
 		var entity = customers[0].ToDomain()
-		return &(entity), nil
+		return &entity, nil
 	}
 }
