@@ -80,7 +80,7 @@ Caso desejar visualizar o relatório de cobertura em HTML, execute o seguinte co
 
 ```bash
 go test -coverprofile=coverage.out ./...
-grep -v "routes.go" coverage.out | grep -v "gorm.go" | grep -v "main.go" | grep -v "customer_model.go" > filtered_coverage.out
+grep -v "routes.go" coverage.out | grep -v "database.go" | grep -v "main.go" | grep -v "customer_model.go" > filtered_coverage.out
 go tool cover -html=filtered_coverage.out -o coverage.html
 ```
 
