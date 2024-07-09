@@ -23,7 +23,7 @@ Para rodar a aplicação, é necessário ter as seguintes ferramentas instaladas
       Execute o seguinte comando para construir a imagem Docker da aplicação:
       
       ```bash
-      docker build . -t tech-challenge-go -f Dockerfile
+      docker build . -t placeholder_repository_name -f Dockerfile
       ```
 
 3. **Deploy com Kubernetes:**
