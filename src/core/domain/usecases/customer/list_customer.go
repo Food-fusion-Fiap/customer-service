@@ -11,6 +11,10 @@ type ListCustomerUsecase struct {
 }
 
 func (r *ListCustomerUsecase) Execute(inputDto dtos.ListCustomerDto) (*entities.Customer, error) {
+	if inputDto.CPF == "" {
+		return nil, nil
+	}
+
 	customer := entities.Customer{
 		CPF: inputDto.CPF,
 	}

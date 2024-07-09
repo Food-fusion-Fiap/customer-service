@@ -20,7 +20,7 @@ func (r CustomerRepository) Create(entity *entities.Customer) (*entities.Custome
 		Email: entity.Email,
 	}
 
-	if err := r.DB.Create(&customer); err != nil {
+	if err := database.DB.Create(&customer); err != nil {
 		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
 			return nil, errors.New("cliente já existe no sistema")
 		} else {
@@ -36,7 +36,7 @@ func (r CustomerRepository) Create(entity *entities.Customer) (*entities.Custome
 func (r CustomerRepository) FindFirstByCpf(entity *entities.Customer) (*entities.Customer, error) {
 	var customer models.Customer
 
-	db := r.DB.Where("cpf = ?", entity.CPF)
+	db := database.DB.Where("cpf = ?", entity.CPF)
 	err := db.First(&customer).Error
 
 	if err != nil {

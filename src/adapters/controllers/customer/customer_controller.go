@@ -53,7 +53,7 @@ func CreateCustomer(c *gin.Context, usecase *usecases.CreateCustomerUsecase) {
 	result, err := usecase.Execute(inputDto)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
