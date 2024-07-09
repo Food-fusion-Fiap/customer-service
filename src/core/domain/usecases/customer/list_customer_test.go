@@ -12,11 +12,11 @@ import (
 
 type mockListCustomerRepository struct {
 	gateways.CustomerRepository
-	mockList func(*entities.Customer) ([]entities.Customer, error)
+	mockFindFirstByCpf func(*entities.Customer) (*entities.Customer, error)
 }
 
-func (m *mockListCustomerRepository) List(customer *entities.Customer) ([]entities.Customer, error) {
-	return m.mockList(customer)
+func (m *mockListCustomerRepository) FindFirstByCpf(customer *entities.Customer) (*entities.Customer, error) {
+	return m.mockFindFirstByCpf(customer)
 }
 
 func TestListCustomerUsecase_Execute(t *testing.T) {
@@ -31,11 +31,8 @@ func TestListCustomerUsecase_Execute(t *testing.T) {
 	}
 
 	t.Run("valid input", func(t *testing.T) {
-		mockCustomerRepo.mockList = func(customer *entities.Customer) ([]entities.Customer, error) {
-			var response []entities.Customer
-			response = append(response, entities.Customer{})
-
-			return response, nil
+		mockCustomerRepo.mockFindFirstByCpf = func(customer *entities.Customer) (*entities.Customer, error) {
+			return &entities.Customer{}, nil
 		}
 
 		_, err := usecase.Execute(inputDto)
@@ -43,7 +40,7 @@ func TestListCustomerUsecase_Execute(t *testing.T) {
 	})
 
 	t.Run("erro ao listar cliente", func(t *testing.T) {
-		mockCustomerRepo.mockList = func(customer *entities.Customer) ([]entities.Customer, error) {
+		mockCustomerRepo.mockFindFirstByCpf = func(customer *entities.Customer) (*entities.Customer, error) {
 			return nil, fmt.Errorf("Erro ao listar cliente")
 		}
 

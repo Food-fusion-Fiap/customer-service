@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/CAVAh/api-tech-challenge/src/core/domain/dtos"
@@ -13,12 +12,7 @@ import (
 func ListCustomers(c *gin.Context, usecase *usecases.ListCustomerUsecase) {
 	var inputDto dtos.ListCustomerDto
 
-	queryParams := c.Request.URL.Query().Encode()
-	fmt.Printf("Query string recebida: %s\n", queryParams)
-
 	c.BindQuery(&inputDto)
-
-	fmt.Printf("inputDto após o bind: %+v\n", inputDto)
 
 	if err := validator.Validate(inputDto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

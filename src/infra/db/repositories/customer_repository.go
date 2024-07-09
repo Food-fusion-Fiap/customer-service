@@ -33,28 +33,6 @@ func (r CustomerRepository) Create(entity *entities.Customer) (*entities.Custome
 	return &result, nil
 }
 
-func (r CustomerRepository) List(entity *entities.Customer) ([]entities.Customer, error) {
-	var customers []models.Customer
-
-	if cpf := entity.CPF; cpf != "" {
-		if err := r.DB.Where("cpf = ?", cpf).Find(&customers).Error; err != nil {
-			return nil, err
-		}
-	} else {
-		if err := r.DB.Find(&customers).Error; err != nil {
-			return nil, err
-		}
-	}
-
-	var response []entities.Customer
-
-	for _, customer := range customers {
-		response = append(response, customer.ToDomain())
-	}
-
-	return response, nil
-}
-
 func (r CustomerRepository) FindFirstByCpf(entity *entities.Customer) (*entities.Customer, error) {
 	var customers []models.Customer
 

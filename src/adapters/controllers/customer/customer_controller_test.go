@@ -31,10 +31,10 @@ func (m *MockCustomerRepository) Create(customer *entities.Customer) (*entities.
 	return nil, args.Error(1)
 }
 
-func (m *MockCustomerRepository) List(customer *entities.Customer) ([]entities.Customer, error) {
+func (m *MockCustomerRepository) FindFirstByCpf(customer *entities.Customer) (*entities.Customer, error) {
 	args := m.Called(customer)
 	if args.Get(0) != nil {
-		return args.Get(0).([]entities.Customer), args.Error(1)
+		return args.Get(0).(*entities.Customer), args.Error(1)
 	}
 	return nil, args.Error(1)
 }
@@ -77,7 +77,7 @@ func TestListCustomer_UseCaseError(t *testing.T) {
 	mockRepo := new(MockCustomerRepository)
 
 	// Configurar o mock para retornar um erro ao listar os clientes
-	mockRepo.On("List", mock.Anything).Return(nil, errors.New("some error"))
+	mockRepo.On("FindFirstByCpf", mock.Anything).Return(nil, errors.New("some error"))
 
 	// Substituir o repositório real pelo mock no usecase
 	usecase := usecases.ListCustomerUsecase{
@@ -108,13 +108,16 @@ func TestListCustomers(t *testing.T) {
 
 	// Criar o mock do repositório de clientes
 	mockRepo := new(MockCustomerRepository)
-	expectedCustomers := []entities.Customer{
-		{ID: 1, Name: "Customer 1", CPF: "12345678900", Email: "email@email.com", CreatedAt: "2021-01-01"},
-		{ID: 2, Name: "Customer 2", CPF: "12345678901", Email: "ema1l@ema1l.com", CreatedAt: "2021-01-02"},
+	expectedCustomer := entities.Customer{
+		ID:        1,
+		Name:      "Customer 1",
+		CPF:       "12345678900",
+		Email:     "email@email.com",
+		CreatedAt: "2021-01-01",
 	}
 
-	// Configurar o mock para retornar a lista esperada de clientes
-	mockRepo.On("List", mock.Anything).Return(expectedCustomers, nil)
+	// Configurar o mock para retornar o cliente esperado
+	mockRepo.On("FindFirstByCpf", mock.Anything).Return(&expectedCustomer, nil)
 
 	// Substituir o repositório real pelo mock no usecase
 	usecase := usecases.ListCustomerUsecase{
@@ -136,7 +139,7 @@ func TestListCustomers(t *testing.T) {
 
 	// Verificar o resultado
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, `[{"id":1,"name":"Customer 1","cpf":"12345678900","createdAt":"2021-01-01","email":"email@email.com"},{"id":2,"name":"Customer 2","cpf":"12345678901","createdAt":"2021-01-02","email":"ema1l@ema1l.com"}]`, w.Body.String())
+	assert.JSONEq(t, `{"id":1,"name":"Customer 1","cpf":"12345678900","createdAt":"2021-01-01","email":"email@email.com"}`, w.Body.String())
 
 	// Verificar se o mock foi chamado corretamente
 	mockRepo.AssertExpectations(t)

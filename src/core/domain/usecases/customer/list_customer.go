@@ -10,10 +10,10 @@ type ListCustomerUsecase struct {
 	CustomerRepository gateways.CustomerRepository
 }
 
-func (r *ListCustomerUsecase) Execute(inputDto dtos.ListCustomerDto) ([]entities.Customer, error) {
+func (r *ListCustomerUsecase) Execute(inputDto dtos.ListCustomerDto) (*entities.Customer, error) {
 	customer := entities.Customer{
 		CPF: inputDto.CPF,
 	}
 
-	return r.CustomerRepository.List(&customer)
+	return r.CustomerRepository.FindFirstByCpf(&customer)
 }
