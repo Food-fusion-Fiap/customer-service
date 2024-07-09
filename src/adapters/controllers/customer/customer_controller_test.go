@@ -91,7 +91,7 @@ func TestListCustomer_UseCaseError(t *testing.T) {
 	})
 
 	// Criar uma requisição HTTP simulada com parâmetros de query válidos
-	req, _ := http.NewRequest(http.MethodGet, "/customers", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/customers?cpf=12345678900", nil)
 	w := httptest.NewRecorder()
 
 	// Executar a requisição
@@ -131,7 +131,7 @@ func TestListCustomers(t *testing.T) {
 	})
 
 	// Criar uma requisição HTTP simulada
-	req, _ := http.NewRequest(http.MethodGet, "/customers", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/customers?cpf=12345678900", nil)
 	w := httptest.NewRecorder()
 
 	// Executar a requisição
@@ -143,6 +143,39 @@ func TestListCustomers(t *testing.T) {
 
 	// Verificar se o mock foi chamado corretamente
 	mockRepo.AssertExpectations(t)
+}
+
+func TestListCustomers_WithoutCpf(t *testing.T) {
+	// Configurar o gin em modo de teste
+	gin.SetMode(gin.TestMode)
+
+	// Criar o mock do repositório de clientes
+	mockRepo := new(MockCustomerRepository)
+
+	// Substituir o repositório real pelo mock no usecase
+	usecase := usecases.ListCustomerUsecase{
+		CustomerRepository: mockRepo,
+	}
+
+	// Configurar o controlador com o mock do usecase
+	r := gin.Default()
+	r.GET("/customers", func(c *gin.Context) {
+		ListCustomers(c, &usecase)
+	})
+
+	// Criar uma requisição HTTP simulada
+	req, _ := http.NewRequest(http.MethodGet, "/customers", nil)
+	w := httptest.NewRecorder()
+
+	// Executar a requisição
+	r.ServeHTTP(w, req)
+
+	// Verificar o resultado
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, `null`, w.Body.String())
+
+	// Verificar se o mock não foi chamado
+	mockRepo.AssertNotCalled(t, "FindFirstByCpf", mock.Anything)
 }
 
 func TestCreateCustomer_InvalidJSON(t *testing.T) {

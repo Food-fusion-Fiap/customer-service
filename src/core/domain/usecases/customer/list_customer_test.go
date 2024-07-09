@@ -47,4 +47,10 @@ func TestListCustomerUsecase_Execute(t *testing.T) {
 		_, err := usecase.Execute(inputDto)
 		assert.Error(t, err)
 	})
+
+	t.Run("cpf vazio", func(t *testing.T) {
+		inputDto.CPF = ""
+		_, err := usecase.Execute(inputDto)
+		assert.NoError(t, err)
+	})
 }
