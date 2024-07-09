@@ -18,7 +18,7 @@ var (
 type Database interface {
 	Create(data interface{}) error
 	Where(query interface{}, args ...interface{}) *gorm.DB
-	Find(dest interface{}, conds ...interface{}) *gorm.DB
+	First(dest interface{}, conds ...interface{}) error
 }
 
 type RealDatabase struct {
@@ -33,8 +33,8 @@ func (rdb *RealDatabase) Where(query interface{}, args ...interface{}) *gorm.DB 
 	return rdb.db.Where(query, args...)
 }
 
-func (rdb *RealDatabase) Find(dest interface{}, conds ...interface{}) *gorm.DB {
-	return rdb.db.Find(dest, conds...)
+func (rdb *RealDatabase) First(dest interface{}, conds ...interface{}) error {
+	return rdb.db.First(dest, conds...).Error
 }
 
 func ConnectDB() {

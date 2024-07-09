@@ -53,23 +53,23 @@ func (mr *MockDatabaseMockRecorder) Create(data any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockDatabase)(nil).Create), data)
 }
 
-// Find mocks base method.
-func (m *MockDatabase) Find(dest any, conds ...any) *gorm.DB {
+// First mocks base method.
+func (m *MockDatabase) First(dest any, conds ...any) error {
 	m.ctrl.T.Helper()
 	varargs := []any{dest}
 	for _, a := range conds {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "Find", varargs...)
-	ret0, _ := ret[0].(*gorm.DB)
+	ret := m.ctrl.Call(m, "First", varargs...)
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Find indicates an expected call of Find.
-func (mr *MockDatabaseMockRecorder) Find(dest any, conds ...any) *gomock.Call {
+// First indicates an expected call of First.
+func (mr *MockDatabaseMockRecorder) First(dest any, conds ...any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]any{dest}, conds...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockDatabase)(nil).Find), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "First", reflect.TypeOf((*MockDatabase)(nil).First), varargs...)
 }
 
 // Where mocks base method.

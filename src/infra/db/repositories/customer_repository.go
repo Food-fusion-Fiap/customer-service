@@ -34,17 +34,16 @@ func (r CustomerRepository) Create(entity *entities.Customer) (*entities.Custome
 }
 
 func (r CustomerRepository) FindFirstByCpf(entity *entities.Customer) (*entities.Customer, error) {
-	var customers []models.Customer
+	var customer models.Customer
 
-	cpf := entity.CPF
-	if err := r.DB.Where("cpf = ?", cpf).Find(&customers).Error; err != nil {
+	db := r.DB.Where("cpf = ?", entity.CPF)
+	err := db.First(&customer).Error
+
+	if err != nil {
 		return nil, err
 	}
 
-	if len(customers) == 0 {
-		return nil, nil
-	} else {
-		var entity = customers[0].ToDomain()
-		return &entity, nil
-	}
+	result := customer.ToDomain()
+
+	return &result, nil
 }
