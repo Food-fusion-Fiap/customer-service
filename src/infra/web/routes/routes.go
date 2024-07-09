@@ -5,13 +5,16 @@ import (
 
 	controllers "github.com/CAVAh/api-tech-challenge/src/adapters/controllers/customer"
 	usecases "github.com/CAVAh/api-tech-challenge/src/core/domain/usecases/customer"
+	"github.com/CAVAh/api-tech-challenge/src/infra/db/database"
 	"github.com/CAVAh/api-tech-challenge/src/infra/db/repositories"
 	"github.com/gin-gonic/gin"
 )
 
 func HandleRequests() {
 	router := gin.Default()
-	customerRepository := &repositories.CustomerRepository{}
+	customerRepository := &repositories.CustomerRepository{
+		DB: database.DB,
+	}
 	listUsecase := &usecases.ListCustomerUsecase{CustomerRepository: customerRepository}
 	createUsecase := &usecases.CreateCustomerUsecase{CustomerRepository: customerRepository}
 
