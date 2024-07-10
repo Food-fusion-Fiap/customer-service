@@ -82,19 +82,18 @@ func TestCreateCustomer_Error(t *testing.T) {
 // 	repo := CustomerRepository{DB: mockDB}
 
 // 	entity := &entities.Customer{CPF: "12345678901"}
-
 // 	customerModel := models.Customer{
 // 		Name:  "John Doe",
 // 		CPF:   "12345678901",
 // 		Email: "john@example.com",
 // 	}
 
-// 	// Mock the Where and Find calls
-// 	mockDB.EXPECT().Where("cpf = ?", entity.CPF).Return(mockDB).Times(1)
+// 	// Mock para retornar a instância correta de gorm.DB
+// 	mockDB.EXPECT().Where("cpf = ?", entity.CPF).Return(&gorm.DB{}).Times(1)
 // 	mockDB.EXPECT().First(gomock.Any()).DoAndReturn(func(dest interface{}) *gorm.DB {
 // 		*dest.(*models.Customer) = customerModel
 // 		return &gorm.DB{}
-// 	})
+// 	}).Times(1)
 
 // 	result, err := repo.FindFirstByCpf(entity)
 // 	assert.NoError(t, err)
