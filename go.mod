@@ -5,6 +5,7 @@ go 1.21.4
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/stretchr/testify v1.9.0
+	go.uber.org/mock v0.4.0
 	gopkg.in/validator.v2 v2.0.1
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5
@@ -36,6 +37,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	golang.org/x/arch v0.6.0 // indirect
@@ -44,6 +46,7 @@ require (
 	golang.org/x/sync v0.5.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

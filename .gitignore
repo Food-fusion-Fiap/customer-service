@@ -25,3 +25,6 @@ go.work
 postgres-data
 
 .idea/
+
+# Ignore coverage report
+coverage.html

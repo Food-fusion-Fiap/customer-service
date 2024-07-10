@@ -5,12 +5,18 @@ import (
 	"strings"
 
 	"github.com/CAVAh/api-tech-challenge/src/core/domain/entities"
-	"github.com/CAVAh/api-tech-challenge/src/infra/db/database"
 	"github.com/CAVAh/api-tech-challenge/src/infra/db/models"
+	"gorm.io/gorm"
 )
 
+type DBInterface interface {
+	Create(value interface{}) *gorm.DB
+	Where(query interface{}, args ...interface{}) *gorm.DB
+	Find(dest interface{}, conds ...interface{}) *gorm.DB
+}
+
 type CustomerRepository struct {
-	DB database.Database
+	DB DBInterface
 }
 
 func (r CustomerRepository) Create(entity *entities.Customer) (*entities.Customer, error) {
@@ -20,7 +26,7 @@ func (r CustomerRepository) Create(entity *entities.Customer) (*entities.Custome
 		Email: entity.Email,
 	}
 
-	if err := r.DB.Create(&customer); err != nil {
+	if err := r.DB.Create(&customer).Error; err != nil {
 		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
 			return nil, errors.New("cliente já existe no sistema")
 		} else {
@@ -33,17 +39,20 @@ func (r CustomerRepository) Create(entity *entities.Customer) (*entities.Custome
 	return &result, nil
 }
 
-func (r CustomerRepository) FindFirstByCpf(entity *entities.Customer) (*entities.Customer, error) {
-	var customer models.Customer
+func (r CustomerRepository) List(entity *entities.Customer) ([]entities.Customer, error) {
+	var customers []models.Customer
 
-	db := r.DB.Where("cpf = ?", entity.CPF)
-	err := db.First(&customer).Error
-
-	if err != nil {
-		return nil, err
+	if cpf := entity.CPF; cpf != "" {
+		r.DB.Where("cpf = ?", cpf).Find(&customers)
+	} else {
+		r.DB.Find(&customers)
 	}
 
-	result := customer.ToDomain()
+	var response []entities.Customer
 
-	return &result, nil
+	for _, customer := range customers {
+		response = append(response, customer.ToDomain())
+	}
+
+	return response, nil
 }
