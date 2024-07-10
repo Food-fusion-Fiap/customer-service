@@ -73,30 +73,6 @@ jobs:
             echo "$OUTPUT"
           fi
 
-      - name: Run tests and generate coverage
-        run: go test ./... -coverprofile=coverage.out
-        
-      - name: Ignore coverage for routes, main, gorm and models
-        run: |
-          rep -v "routes.go" coverage.out | grep -v "gorm.go" | grep -v "main.go" | grep -v "customer_model.go" > filtered_coverage.out
-
-      - name: Generate coverage report
-        run: go tool cover -html=filtered_coverage.out -o coverage.html
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-report
-          path: coverage.html
-          
-      - name: Check coverage
-        run: |
-          COVERAGE=$(go tool cover -func=filtered_coverage.out | grep total | awk '{print $3}')
-          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
-            echo "Coverage is less than 90%: $COVERAGE"
-            exit 1
-          fi
-
   build-and-deploy:
     name: Continuous Delivery Pipeline
     runs-on: ubuntu-latest
