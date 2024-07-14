@@ -18,48 +18,58 @@ spec:
         app: group-18-fastfood-backend
     spec:
       containers:
-      - name: group-18-fastfood-backend
-        image: placeholder_repository_name
-        imagePullPolicy: IfNotPresent
-        ports:
-          - containerPort: 8080
-        livenessProbe:
+        - name: group-18-fastfood-backend
+          image: placeholder_repository_name
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          livenessProbe:
             httpGet:
               path: /customers
               port: 8080
             periodSeconds: 60
             failureThreshold: 3
             initialDelaySeconds: 10
-        readinessProbe:
+          readinessProbe:
             httpGet:
               path: /customers
               port: 8080
             periodSeconds: 20
             failureThreshold: 5
             initialDelaySeconds: 3
-        resources:
-          requests:
-            cpu: 8m
-          limits:
-            cpu: 8m  
-        env:
-          - name: POSTGRES_DB
-            valueFrom:
-              configMapKeyRef:
-                name: configmap-group-18-fastfood-backend
-                key: POSTGRES_DB
-          - name: POSTGRES_HOST
-            valueFrom:
-              configMapKeyRef:
-                name: configmap-group-18-fastfood-backend
-                key: POSTGRES_HOST
-          - name: POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: secret-group-18-fastfood-backend
-                key: POSTGRES_USER
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: secret-group-18-fastfood-backend
-                key: POSTGRES_PASSWORD
+          resources:
+            requests:
+              cpu: 8m
+            limits:
+              cpu: 8m
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap-group-18-fastfood-backend
+                  key: POSTGRES_DB
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap-group-18-fastfood-backend
+                  key: POSTGRES_HOST
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-group-18-fastfood-backend
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-group-18-fastfood-backend
+                  key: POSTGRES_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: secret-group-18-fastfood-backend
+                  key: JWT_SECRET
+            - name: JWT_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-group-18-fastfood-backend
+                  key: JWT_ISSUER
