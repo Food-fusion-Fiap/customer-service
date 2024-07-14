@@ -129,9 +129,25 @@ jobs:
           curl -LO "https://dl.k8s.io/release/$(curl -sSL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
-
+      
       - name: Update kube config
         run: aws eks update-kubeconfig --name ${{ vars.AWS_EKS_CLUSTER_NAME }} --region ${{ vars.AWS_REGION }}
+
+      - name: Create Kubernetes secret
+        run: |
+          kubectl create secret generic secret-group-18-fastfood-backend \
+            --from-literal=POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            --from-literal=POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            --from-literal=JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            --from-literal=JWT_ISSUER=${{ secrets.JWT_ISSUER }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+              
+      - name: Create Kubernetes configmap
+        run: |
+          kubectl create configmap configmap-group-18-fastfood-backend \
+            --from-literal=POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+            --from-literal=POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
+            --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy to Kubernetes
         env:
