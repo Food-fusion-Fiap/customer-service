@@ -90,6 +90,12 @@ Para descobrir o percentual de cobertura, execute o seguinte comando:
 go tool cover -func=filtered_coverage.out | grep total | awk '{print $3}'
 ```
 
+Para ver os logs de um pod específico, execute o seguinte comando:
+
+```bash
+kubectl logs -f POD_NAME
+```
+
 ## Documentação da API
 Ao importar a documentação presente em `docs/tech-challenge.json` no Postman, terão valores de exemplos editáveis.
 
