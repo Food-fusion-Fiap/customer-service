@@ -166,7 +166,7 @@ jobs:
           
       - name: Save the Load Balancer IP as a secret
         id: save-secret
-        uses: Skandalik/save-secret@v1.0.0
+        uses: Skandalik/save-secret@v1.0.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           secret_name: CUSTOMER_SERVICE_ENDPOINT
