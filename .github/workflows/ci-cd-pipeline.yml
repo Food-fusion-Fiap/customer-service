@@ -157,6 +157,20 @@ jobs:
         run: |
           kubectl apply -f ./infra --validate=false
           kubectl rollout status deployment/$K8S_DEPLOYMENT_NAME
+          
+      - name: Get LoadBalancer IP
+        id: get_lb_ip
+        run: |
+          export LB_IP=$(kubectl get svc svc-customer-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          echo "loadbalancer_ip=$LB_IP" >> $GITHUB_ENV
+          
+      - name: Save the Load Balancer IP as a secret
+        id: save-secret
+        uses: Skandalik/save-secret@v1.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          secret_name: CUSTOMER_SERVICE_ENDPOINT
+          secret_value: $LOADBALANCER_IP
 
       # - name: Deploy to Kubernetes
       #  env:
