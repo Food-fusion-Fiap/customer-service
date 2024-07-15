@@ -158,19 +158,20 @@ jobs:
           kubectl apply -f ./infra --validate=false
           kubectl rollout status deployment/$K8S_DEPLOYMENT_NAME
           
-      - name: Get LoadBalancer IP
+      - name: Get LoadBalancer Endpoint
         id: get_lb_ip
         run: |
-          export LB_IP=$(kubectl get svc svc-customer-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-          echo "loadbalancer_ip=$LB_IP" >> $GITHUB_ENV
+          LB_IP=$(kubectl get svc svc-customer-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          echo "LoadBalancer Endpoint: $LB_IP"
+          echo "CUSTOMER_SERVICE_ENDPOINT=$LB_IP" >> $GITHUB_ENV
           
-      - name: Save the Load Balancer IP as a secret
-        id: save-secret
-        uses: Skandalik/save-secret@v1.0.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          secret_name: CUSTOMER_SERVICE_ENDPOINT
-          secret_value: $LOADBALANCER_IP
+      - name: Update Org Variable
+        run: |
+          curl -X PATCH \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/orgs/Food-fusion-Fiap/actions/variables/CUSTOMER_SERVICE_ENDPOINT \
+            -d '{"name":"CUSTOMER_SERVICE_ENDPOINT","value":"'"$CUSTOMER_SERVICE_ENDPOINT"'"}'
 
       # - name: Deploy to Kubernetes
       #  env:
