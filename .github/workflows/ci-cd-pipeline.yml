@@ -146,7 +146,7 @@ jobs:
         run: |
           kubectl create configmap configmap-group-18-fastfood-backend \
             --from-literal=POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-            --from-literal=POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
+            --from-literal=POSTGRES_HOST=${{ secrets.POSTGRES_HOST_CUSTOMER }} \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy to Kubernetes
