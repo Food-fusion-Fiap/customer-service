@@ -18,11 +18,7 @@ func (r *ListCustomerUsecase) Execute(inputDto dtos.ListCustomerDto) (string, er
 	if inputDto.CPF == "" {
 		token, err := utils.GenerateJWT(nil)
 
-		if err != nil {
-			return "", err
-		}
-
-		return token, nil
+		return token, err
 	}
 
 	customer.CPF = inputDto.CPF
@@ -33,19 +29,11 @@ func (r *ListCustomerUsecase) Execute(inputDto dtos.ListCustomerDto) (string, er
 	if err == nil {
 		token, err := utils.GenerateJWT(foundCustomer.ID)
 
-		if err != nil {
-			return "", err
-		}
-
-		return token, nil
+		return token, err
 	}
 
 	// Se o cliente não existir, gere o token com customerId nulo
 	token, err := utils.GenerateJWT(nil)
 
-	if err != nil {
-		return "", err
-	}
-
-	return token, nil
+	return token, err
 }
