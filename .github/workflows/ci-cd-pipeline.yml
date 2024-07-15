@@ -158,22 +158,18 @@ jobs:
           kubectl apply -f ./infra --validate=false
           kubectl rollout status deployment/$K8S_DEPLOYMENT_NAME
           
-      - name: Get LoadBalancer Endpoint
-        id: get_lb_ip
+      - name: Update LoadBalancer Endpoint
         run: |
           LB_IP=$(kubectl get svc svc-customer-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
           echo "LoadBalancer Endpoint: $LB_IP"
-          echo "CUSTOMER_SERVICE_ENDPOINT=$LB_IP" >> $GITHUB_ENV
-          
-      - name: Update Org Variable
-        run: |
           curl -L \
             -X PATCH \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/orgs/Food-fusion-Fiap/actions/variables/CUSTOMER_SERVICE_ENDPOINT \
-            -d '{"name":"CUSTOMER_SERVICE_ENDPOINT","value":"'"$CUSTOMER_SERVICE_ENDPOINT"'"}'
+            -H "Content-Type: application/json" \
+            -d '{"name":"CUSTOMER_SERVICE_ENDPOINT","value":"'"$LB_IP"'","visibility": "all"}'
 
       # - name: Deploy to Kubernetes
       #  env:
