@@ -9,7 +9,6 @@ spec:
     matchLabels:
       app: customer-service
   replicas: 3
-  namespace: default
   strategy:
     type: RollingUpdate
   template:

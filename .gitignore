@@ -28,3 +28,6 @@ postgres-data
 
 # Ignore coverage report
 coverage.html
+
+infra/secrets.yaml
+infra/configmap.yaml
