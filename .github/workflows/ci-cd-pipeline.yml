@@ -100,13 +100,19 @@ jobs:
       - name: Calculate next tag
         id: tagger
         run: |
-          TAG="0.1.0"  # Initialize with the starting version
-          LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
-          if [ ! -z "$LATEST_TAG" ]; then
-            TAG=$(echo $LATEST_TAG | awk -F. '{$NF+=1; OFS="."; print $0}')
+          TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          LATEST_TAG=$TAG
+          if [[ "$LATEST_TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+            patch="${BASH_REMATCH[3]}"
+            next_patch=$((patch + 1))
+            NEXT_TAG="v${major}.${minor}.${next_patch}"
+            echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
+          else
+            echo "LATEST_TAG is not a semantic version, defaulting to v1.0.0"
+            echo "IMAGE_TAG=v1.0.0" >> $GITHUB_ENV
           fi
-          echo "Next tag: $TAG"
-          echo "::set-output name=next_tag::$TAG"      
 
       - name: Build, tag, and push Docker image to Amazon ECR
         env:
