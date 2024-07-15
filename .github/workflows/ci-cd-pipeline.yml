@@ -135,7 +135,7 @@ jobs:
 
       - name: Create Kubernetes secret
         run: |
-          kubectl create secret generic secret-group-18-fastfood-backend \
+          kubectl create secret generic secret-customer-service \
             --from-literal=POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
             --from-literal=POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
             --from-literal=JWT_SECRET=${{ secrets.JWT_SECRET }} \
@@ -144,7 +144,7 @@ jobs:
               
       - name: Create Kubernetes configmap
         run: |
-          kubectl create configmap configmap-group-18-fastfood-backend \
+          kubectl create configmap configmap-customer-service \
             --from-literal=POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
             --from-literal=POSTGRES_HOST=${{ secrets.POSTGRES_HOST_CUSTOMER }} \
             --dry-run=client -o yaml | kubectl apply -f -

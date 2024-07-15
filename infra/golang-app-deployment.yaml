@@ -1,24 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: group-18-fastfood-backend
+  name: customer-service
   labels:
-    app: group-18-fastfood-backend
+    app: customer-service
 spec:
   selector:
     matchLabels:
-      app: group-18-fastfood-backend
+      app: customer-service
   replicas: 3
+  namespace: default
   strategy:
     type: RollingUpdate
   template:
     metadata:
-      name: group-18-fastfood-backend
+      name: customer-service
       labels:
-        app: group-18-fastfood-backend
+        app: customer-service
     spec:
       containers:
-        - name: group-18-fastfood-backend
+        - name: customer-service
           image: placeholder_repository_name
           imagePullPolicy: IfNotPresent
           ports:
@@ -46,30 +47,30 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
-                  name: configmap-group-18-fastfood-backend
+                  name: configmap-customer-service
                   key: POSTGRES_DB
             - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: configmap-group-18-fastfood-backend
+                  name: configmap-customer-service
                   key: POSTGRES_HOST
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: secret-group-18-fastfood-backend
+                  name: secret-customer-service
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: secret-group-18-fastfood-backend
+                  name: secret-customer-service
                   key: POSTGRES_PASSWORD
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: secret-group-18-fastfood-backend
+                  name: secret-customer-service
                   key: JWT_SECRET
             - name: JWT_ISSUER
               valueFrom:
                 secretKeyRef:
-                  name: secret-group-18-fastfood-backend
+                  name: secret-customer-service
                   key: JWT_ISSUER
