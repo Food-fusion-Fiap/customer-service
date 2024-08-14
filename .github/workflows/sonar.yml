@@ -2,9 +2,9 @@ name: SonarCloud analysis
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -28,6 +28,12 @@ jobs:
         run: |
           go test -coverprofile=./cov.out ./...
 
+
+#      - name: Run Gosec Security Scanner
+#        run: |
+#          go get github.com/securego/gosec/cmd/gosec
+#          gosec -no-fail -fmt=sonarqube -out report.json ./...
+
       - name: Analyze with SonarCloud
 
         # You can pin the exact commit or the version.
@@ -40,18 +46,20 @@ jobs:
           args:
             # Unique keys of your project and organization. You can find them in SonarCloud > Information (bottom-left menu)
             # mandatory
-            -Dsonar.projectKey=Food-fusion-Fiap_customer-service
+            -Dsonar.projectKey=Food-fusion-Fiap_payment-service
             -Dsonar.organization=food-fusion-fiap
             -Dsonar.tests=.
             -Dsonar.test.inclusions=**/*_test.go
             -Dsonar.sources=src/
-            -Dsonar.exclusions=src/infra/**,src/adapters/**,src/utils/**
+            -Dsonar.exclusions=src/adapters/gateways/mocks/**,src/infra/web/routes/**,**/*_mock.go,src/infra/db/repositories/**,src/infra/external/order_service_mock/mock_order_interface.go            
             -Dsonar.go.coverage.reportPaths=cov.out
+
+            #-Dsonar.externalIssuesReportPaths=report.json
             # Comma-separated paths to directories containing main source files.
             #-Dsonar.sources= # optional, default is project base directory
             # Comma-separated paths to directories containing test source files.
             #-Dsonar.tests= # optional. For more info about Code Coverage, please refer to https://docs.sonarcloud.io/enriching/test-coverage/overview/
             # Adds more detail to both client and server-side analysis logs, activating DEBUG mode for the scanner, and adding client-side environment variables and system properties to the server-side log of analysis report processing.
             #-Dsonar.verbose= # optional, default is false
-          # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
+            # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .
