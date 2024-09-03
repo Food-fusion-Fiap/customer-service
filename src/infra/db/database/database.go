@@ -50,7 +50,7 @@ func ConnectDB() {
 		db: db,
 	}
 
-	err = db.AutoMigrate(&models.Customer{})
+	err = db.AutoMigrate(&models.Customer{}, &models.LgpdRemovalRequest{})
 	if err != nil {
 		log.Panic("Erro ao fazer auto migrate")
 	}
