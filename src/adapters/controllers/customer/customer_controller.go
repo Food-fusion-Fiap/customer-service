@@ -61,3 +61,32 @@ func CreateCustomer(c *gin.Context, usecase *usecases.CreateCustomerUsecase) {
 
 	c.JSON(http.StatusCreated, result)
 }
+
+func CreateLgpdRemovalRequestCustomer(c *gin.Context, usecase *usecases.CreateLgpdRemovalRequestUsecase) {
+	var inputDto dtos.LGPDRemovalRequestDto
+
+	if err := c.ShouldBindJSON(&inputDto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := validator.Validate(inputDto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	result, err := usecase.Execute(inputDto)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, result)
+}
