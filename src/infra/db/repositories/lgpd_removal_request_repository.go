@@ -23,9 +23,9 @@ func (r LgpdRemovalRequestRepository) Create(removalRequest *entities.LgpdRemova
 
 	if err := r.DB.Create(&removalRequestModel); err != nil {
 		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
-			return nil, errors.New("cliente já existe no sistema")
+			return nil, errors.New("solicitação de exclusão já existe no sistema")
 		} else {
-			return nil, errors.New("ocorreu um erro desconhecido ao criar o cliente")
+			return nil, errors.New("ocorreu um erro desconhecido ao criar a solicitação")
 		}
 	}
 
