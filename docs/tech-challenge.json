@@ -157,6 +157,64 @@
           }
         }
       }
+    },
+    "/customers/lgpd-removal": {
+      "post": {
+        "tags": [
+          "Cliente"
+        ],
+        "summary": "Cria solicitação de remoção dados LGPD",
+        "description": "Endpoint responsável que cria uma solicitação para remoção dados LGPD.",
+        "operationId": "create-lgpd-removal-request-customer",
+        "requestBody": {
+          "description": "Post the necessary fields for the API to create a new removal request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Customer_lgpd_removal_request"
+              },
+              "examples": {
+                "Criar uma solicitação": {
+                  "value": {
+                    "name": "Fulano de tal",
+                    "address": "rua xpto 123, bairro xpto",
+                    "phone_number": "54984565122",
+                    "payment_history": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Solicitação Criada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer_lgpd_removal_request"
+                },
+                "examples": {
+                  "Criar uma solicitação": {
+                    "value": {
+                      "name": "Fulano de tal",
+                      "address": "rua xpto 123, bairro xpto",
+                      "phone_number": "54984565122",
+                      "payment_history": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+
+          },
+          "500": {
+
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -289,6 +347,33 @@
           "name",
           "cpf",
           "email"
+        ]
+      },
+      "Customer_lgpd_removal_request": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Fulano de tal"
+          },
+          "address": {
+            "type": "string",
+            "example": "rua xpto 123, bairro xpto"
+          },
+          "phone_number": {
+            "type": "string",
+            "example": "54984565122"
+          },
+          "payment_history": {
+            "type": "boolean",
+            "example": "true"
+          }
+        },
+        "required": [
+          "name",
+          "address",
+          "phone_number",
+          "payment_history"
         ]
       }
     }
