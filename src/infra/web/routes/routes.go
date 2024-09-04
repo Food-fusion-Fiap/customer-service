@@ -32,7 +32,7 @@ func HandleRequests() {
 		controllers.CreateCustomer(c, createUsecase)
 	})
 
-	router.POST("/customers/lgpd-exclusion", func(c *gin.Context) {
+	router.POST("/customers/lgpd-removal", func(c *gin.Context) {
 		controllers.CreateLgpdRemovalRequestCustomer(c, createLgpdRemovalRequest)
 	})
 
