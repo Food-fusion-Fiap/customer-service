@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/CAVAh/api-tech-challenge/src/core/domain/dtos"
@@ -69,6 +70,7 @@ func CreateLgpdRemovalRequestCustomer(c *gin.Context, usecase *usecases.CreateLg
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		fmt.Printf("error binding json: %v\n", err)
 		return
 	}
 
@@ -76,6 +78,7 @@ func CreateLgpdRemovalRequestCustomer(c *gin.Context, usecase *usecases.CreateLg
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
+		fmt.Printf("error with validation json: %v\n", err)
 		return
 	}
 
