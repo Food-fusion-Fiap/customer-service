@@ -13,7 +13,14 @@ import (
 func ListCustomers(c *gin.Context, usecase *usecases.ListCustomerUsecase) {
 	var inputDto dtos.ListCustomerDto
 
-	c.BindQuery(&inputDto)
+	err := c.BindQuery(&inputDto)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
 
 	if err := validator.Validate(inputDto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
