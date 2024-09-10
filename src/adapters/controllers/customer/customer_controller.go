@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/CAVAh/api-tech-challenge/src/core/domain/dtos"
@@ -12,7 +13,14 @@ import (
 func ListCustomers(c *gin.Context, usecase *usecases.ListCustomerUsecase) {
 	var inputDto dtos.ListCustomerDto
 
-	c.BindQuery(&inputDto)
+	err := c.BindQuery(&inputDto)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
 
 	if err := validator.Validate(inputDto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -47,6 +55,37 @@ func CreateCustomer(c *gin.Context, usecase *usecases.CreateCustomerUsecase) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
+		return
+	}
+
+	result, err := usecase.Execute(inputDto)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, result)
+}
+
+func CreateLgpdRemovalRequestCustomer(c *gin.Context, usecase *usecases.CreateLgpdRemovalRequestUsecase) {
+	var inputDto dtos.LGPDRemovalRequestDto
+
+	if err := c.ShouldBindJSON(&inputDto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		fmt.Printf("error binding json: %v\n", err)
+		return
+	}
+
+	if err := validator.Validate(inputDto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		fmt.Printf("error with validation json: %v\n", err)
 		return
 	}
 
