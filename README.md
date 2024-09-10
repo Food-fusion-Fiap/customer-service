@@ -1,46 +1,11 @@
-# Fast Food FIAP - Tech Challenge - Customer Microservice
+# Food Fusion - Tech Challenge - Customer Microservice
 
 Microsserviço responsável pela parte de cliente (criar cliente e pesquisar cliente).
 
-## Instruções para Rodar a Aplicação Local
-
-1. **Configuração do Ambiente:**
-
-      Certifique-se de ter o Docker e o Kubernetes configurados corretamente na sua máquina.
-      
-2. **Build da Imagem Docker:**
-      
-      Execute o seguinte comando para construir a imagem Docker da aplicação:
-      
-      ```bash
-      docker build . -t customer-service -f Dockerfile
-      ```
-
-3. **Deploy com Kubernetes:**
-
-      Aplique os recursos do Kubernetes utilizando o seguinte comando:
-
-      ```bash
-      kubectl apply -f infra/
-      ```
-      
-4. **Verificação do Status dos Pods:**
-
-      Aguarde até que todos os pods estejam rodando com o comando:
-
-      ```bash
-      kubectl get pods --watch
-      ```
-
-5. **Pronto.**
-
-## Remoção de Recursos
-
-Para apagar todos os recursos criados, utilize o comando:
-
-```bash
-kubectl delete -f infra/
-```
+# Como rodar localmente
+- `docker compose up` para rodar a base (postgres e pgadmin) (arquivo docker-compose.yml)
+- em src/infra/db/gorm/gorm.go, commente a string de produção e descomente a string local
+- rode a aplicação pela IDE ou pelo comando `go run ./main.go`
 
 ## Testes de estresse
 
