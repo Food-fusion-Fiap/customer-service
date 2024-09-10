@@ -208,10 +208,10 @@
             }
           },
           "400": {
-
+            "description": "Erro de BadRequest"
           },
           "500": {
-
+            "description": "Erro de ServerError"
           }
         }
       }
@@ -366,7 +366,7 @@
           },
           "payment_history": {
             "type": "boolean",
-            "example": "true"
+            "example": true
           }
         },
         "required": [
@@ -375,6 +375,23 @@
           "phone_number",
           "payment_history"
         ]
+      },
+      "ErrorSchema": {
+        "title": "ErrorSchema",
+        "ErrorSchema": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
       }
     }
   }
